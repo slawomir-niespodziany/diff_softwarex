@@ -1,0 +1,298 @@
+%% 
+%% Copyright 2026 Elsevier Ltd
+%% 
+%% This file is part of the 'Elsarticle Bundle'.
+%% ---------------------------------------------
+%% 
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%% 
+
+%% Template article for Elsevier's document class `elsarticle'
+%% with numbered style bibliographic references
+%% SP 2008/03/01
+
+\documentclass[preprint,12pt, a4paper]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% For including figures, graphicx.sty has been loaded in
+%% elsarticle.cls. If you prefer to use the old commands
+%% please give \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+\usepackage{hyperref}
+\setlength{\parindent}{0pt}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers.
+%\usepackage{lineno}
+
+\journal{SoftwareX}
+
+\begin{document}
+\renewcommand{\labelenumii}{\arabic{enumi}.\arabic{enumii}}
+
+\begin{frontmatter}
+
+    %% Title, authors and addresses
+
+    %% use the tnoteref command within \title for footnotes;
+    %% use the tnotetext command for theassociated footnote;
+    %% use the fnref command within \author or \address for footnotes;
+    %% use the fntext command for theassociated footnote;
+    %% use the corref command within \author for corresponding author footnotes;
+    %% use the cortext command for theassociated footnote;
+    %% use the ead command for the email address,
+    %% and the form \ead[url] for the home page:
+    %% \title{Title\tnoteref{label1}}
+    %% \tnotetext[label1]{}
+    %% \author{Name\corref{cor1}\fnref{label2}}
+    %% \ead{email address}
+    %% \ead[url]{home page}
+    %% \fntext[label2]{}
+    %% \cortext[cor1]{}
+    %% \address{Address\fnref{label3}}
+    %% \fntext[label3]{}
+
+    \title{Diff: data driven dependency injection framework for embedded systems}
+
+    %% use optional labels to link authors explicitly to addresses:
+    %% \author[label1,label2]{}
+    %% \address[label1]{}
+    %% \address[label2]{}
+
+    \author{S. Niespodziany}
+
+    \address{Institute of Computer Science, Warsaw University of Technology,  plac Politechniki 1, 00-661 Warsaw, PL}
+
+    \textbf{Before you begin: DELETE THIS SECTION BEFORE SUBMISSION}\\
+
+    \begin{itemize}
+        \item This template is for an original SoftwareX article. If you are submitting an update to a software article that has already been published, please use the software update template from the Guide for Authors.
+        \item The format of a software article is very different to a traditional research article. To help you write yours, we have created this template. We will only consider software articles submitted using this template. Any submission that deviates widely will likely face desk rejection.
+        \item It is mandatory to publicly share the code / software referred to in your software article. You’ll find information on our software sharing criteria in the SoftwareX Guide for Authors.
+        \item It’s important to consult the Guide for Authors when preparing your manuscript; it highlights mandatory requirements and is packed with useful advice. Here are some key ones (please read):
+
+
+              \begin{itemize}
+                  \item We only accept GitHub repositories within Metadata Tables. This is required for forking to our SoftwareX repository if your paper is published. We are unable accept other repositories.
+                  \item GitHub repositories must have a well-documented README.md file, and a Licence.txt file. Your paper will be returned if these are missing.
+                  \item Our word limit is 4,000 words. Please focus your paper on the software and place supporting information into your GitHub repository README.md file.
+                  \item Limit figures to a maximum of six (6) and sparingly include any further display media.
+                  \item We require the five (5) main templated sections outlined below. Your paper will be returned or rejected if these are missing.
+              \end{itemize}
+    \end{itemize}
+
+    \begin{abstract}
+        %% Text of abstract 
+        Ca. 100 words
+
+    \end{abstract}
+
+    \begin{keyword}
+        %% keywords here, in the form: keyword \sep keyword
+        keyword 1 \sep keyword 2 \sep keyword 3
+
+        %% PACS codes here, in the form: \PACS code \sep code
+
+        %% MSC codes here, in the form: \MSC code \sep code
+        %% or \MSC[2008] code \sep code (2000 is the default)
+
+    \end{keyword}
+
+\end{frontmatter}
+
+%\linenumbers
+
+\section*{Required Metadata}
+\label{}
+
+\section*{Current code version}
+\label{}
+
+Ancillary data table required for subversion of the codebase. Kindly replace examples in right column with the correct information about your current code, and leave the left column as it is.
+
+\begin{table}[!h]
+    \begin{tabular}{|l|p{6.5cm}|p{6.5cm}|}
+        \hline
+        \textbf{Nr.} & \textbf{Code metadata description}                                  & \textbf{Please fill in this column}                                        \\
+        \hline
+        C1           & Current code version                                                & v1.0 - First variant                                                       \\
+        \hline
+        C2           & Permanent GitHub link to code/repository used for this code version & https://github.com/slawomir-niespodziany/diff                              \\
+        \hline
+        C3           & Legal Code License                                                  & GPL-3.0                                                                    \\
+        \hline
+        C4           & Code versioning system used                                         & git                                                                        \\
+        \hline
+        C5           & Software code languages, tools, and services used                   & C++14                                                                      \\
+        \hline
+        C6           & Compilation requirements, operating environments \& dependencies    & Platform--agnostic, requires C++ compiler ($\ge 14$)                       \\
+        \hline
+        C7           & If available Link to developer documentation/manual                 & Documented example - https://github.com/slawomir-niespodziany/diff\_broker \\
+        \hline
+        C8           & Support email for questions                                         & slawomir.niespodziany@pw.edu.pl                                            \\
+        \hline
+    \end{tabular}
+    \caption{Code metadata (mandatory)}
+    \label{}
+\end{table}
+
+\textbf{Main text}\\
+
+Maximum 6 pages in total (excluding metadata, tables, figures, references) with a
+4000-word limit (we ask that more priority is placed on the word limit versus the page count). Though we strictly insist on the author following the template, in exceptional
+circumstances, we can be flexible with the page numbers and word limit. In such cases, it should be
+discussed with the managing editor or publisher prior to submission. All queries regarding the same can be reached at softwarex@elsevier.com.\\
+
+The description of your software  shall include:
+
+
+
+
+\begin{enumerate}
+
+    \item Motivation and significance
+          In this section, we want you to introduce the scientific background and the motivation for developing the software.
+
+          \begin{itemize}
+              \item Explain why the software is important and describe the exact (scientific) problem(s) it solves.
+              \item Indicate in what way the software has contributed (or will contribute in the future) to the process of scientific discovery; if available, please cite a research paper using the software.
+              \item Provide a description of the experimental setting. (How does the user use the software?)
+              \item Introduce related work in literature (cite or list algorithms used, other software etc.).\\
+          \end{itemize}
+
+    \item Software description\\
+
+          Describe the software. Provide enough detail to help the reader understand its impact.
+
+          \begin{enumerate}
+              \item Software architecture: Give a short overview of the overall software architecture; provide a pictorial overview where possible; for example, an image showing the components. If necessary, provide implementation details.
+              \item Software functionalities: Present the major functionalities of the software.
+              \item Sample code snippets analysis (optional).\\
+          \end{enumerate}
+
+    \item Illustrative examples\\
+
+          Provide at least one illustrative example to demonstrate the major functions of your software/code.
+          OPTIONAL: You may submit an explanatory video or screencast. Only one MP4 formatted video (max. size 150MB) is possible per article and this should be uploaded as a single supplementary file with your submission. Recommended video dimensions are 640 x 480 at a maximum of 30 frames / second.\\
+
+    \item Impact\\
+
+          This is the main section of the article and reviewers will weight it appropriately.
+          Please indicate:
+
+          \begin{itemize}
+              \item Any new research questions that can be pursued as a result of your software.
+              \item In what way, and to what extent, your software improves the pursuit of existing research questions.
+              \item Any ways in which your software has changed the daily practice of its users.
+              \item How widespread the use of the software is within and outside the intended user group (downloads, number of users if your software is a service, citable publications, etc.).
+              \item How the software is being used in commercial settings and/or how it has led to the creation of spin-off companies.\\
+                    Please note that points 1 and 2 are best demonstrated by references to citable publications.\\
+          \end{itemize}
+
+
+    \item Conclusions\\
+
+          This is a mandatory section summarising your software based on the sections above.
+
+
+\end{enumerate}
+
+\section{Motivation and significance}
+\label{sec:motivation}
+
+Embedded systems are nowadays getting bigger and more complex as the technological advancements allow them to consist of more functionalities in smaller size. A single such system often comes in different variants, having customization options, subscription plans or update capabilities. This puts additional constraints on the software implemented for such. Software is a vital part of an embedded system and grows accordingly to the system itself. The bigger the size, the more problemmatic customization aspects become. Since the NRE cost is significant a simple per--variant implementation is not feasible business--wise. Having multiple implementations also yields the problem of maintainability, build time, CI/CD compatibility. The best solution in this case is to assemble the application from a set building blocks providing various functionalities. Some may serve common core functionalities, others may be use--case specific.
+These challenges form a significant engineering problem with a direct impact on business and on the way embedded software is developed nowadays. Rather than being tackled on a per--project basis, a generalised solution can be proposed at a higher level. In the case of this paper, the generalisation aims for embedded projects implemented witht the widely available C++14 - and higher standards, but not required. The paper discusses a fremawork intended for assembling embedded application from a set of loosely coupled modules, implemented separately. The imposed architecture ensures loose coupling while allowing to use a Json file for data--driven composition of the resulting application and flexible configuration. The design process assumed is compliant with the usage of modern tools for artifact management and continous deployment.
+
+The framework uses the pattern of Dependency Injection. It assumes multiple software components to be implemented, precompiled (to reduce build time) and available for composeing a binary. A selected set of those components is used to compose a runnable. Then during the launch time, a Json file is loaded to determine component instances to be created and their dependencies. The Json consists of a topology of components to be created and its configuration. As it is loaded at startup, it can be easily altered without the need for rebuild - this is particularly convenient for modifying the configuration.
+
+\section{Software description}
+\label{sec:description}
+
+Diff (\textit{Dependency Injection Framework} - \textit{First} variant) consists of two elements. The first is the header--only library which comes along. The second is the philosopy imposed on the architecture of the resulting application.
+
+
+
+% The \emph{Dependency Injection} (DI) design pattern \cite{fowler2004} addresses this coupling at its root by inverting control of dependency creation: rather than a component instantiating its own collaborators, those collaborators are provided from the outside at composition time.
+% DI is well-established in enterprise software through frameworks such as Spring \cite{johnson2004} (Java) and the .NET built-in container \cite{microsoft2023}, but its adoption in embedded C++ has been limited.
+% Existing embedded frameworks prioritize deterministic real-time behavior or a small memory footprint, often at the expense of architectural discipline.
+% A standards-compliant, platform-independent DI framework specifically designed for embedded C++ has been absent from the ecosystem.
+
+% \textit{Diff} fills this gap.
+% It is a header-only C++14 library that implements Dependency Injection on top of a lightweight component model, enabling modular, maintainable, and reusable embedded software \cite{szyperski2002}.
+% Because diff relies exclusively on the C++ standard library—without any OS-specific calls—it is portable across a wide range of targets: Linux (x86, RISC-V), QNX Neutrino (ARM), VxWorks (x86), Windows, and bare-metal ARM and RISC-V environments.
+
+% A user defines two kinds of building blocks.
+% \emph{Regular components} are C++ classes encapsulating distinct functionalities, compiled into static or dynamic libraries.
+% \emph{Interface components} are abstract C++ classes that declare contracts between components, shipped as header-only libraries.
+% An application is then described by a \textbf{topology}: a human-readable JSON file specifying which component types shall be instantiated, their configuration parameters, and how instances are wired together through interface dependencies.
+% At startup, the framework reads this file, constructs all component instances, and resolves their dependencies automatically, making them available via a type-safe \texttt{Build} object.
+% Because the topology is external to the binary, the application can be reconfigured—substituting hardware backends or restructuring component wiring—without recompilation.
+% The same JSON-driven description integrates naturally with CI/CD pipelines, where it selects which component modules are assembled into the target binary.
+
+% This architecture supports the embedded SDLC across several dimensions: independent development and unit-testing of each component, reuse of off-the-shelf component libraries across product variants, and runtime reconfigurability suited to both field deployment and laboratory testing.
+% The \textit{Broker} application included in this work illustrates these properties: a fleet-management edge-device firmware routing messages over interchangeable communication links (GSM, satellite, or Ethernet) is expressed as a set of diff components.
+% Switching between hardware configurations requires only editing the topology JSON file; the compiled component library remains unchanged.
+
+\section*{Acknowledgements}
+\label{}
+
+Optionally thank people and institutes you need to acknowledge.
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+
+%% \section{}
+%% \label{}
+
+%% References:
+%% If you have bibdatabase file and want bibtex to generate the
+%% bibitems, please use
+%%
+%%  \bibliographystyle{elsarticle-num}
+%%  \bibliography{<your bibdatabase>}
+
+%% else use the following coding to input the bibitems directly in the
+%% TeX file.
+
+\begin{thebibliography}{00}
+
+    \bibitem{fowler2004}
+    M.~Fowler, ``Inversion of Control Containers and the Dependency Injection Pattern,'' martinfowler.com, Jan.\ 2004. [Online]. Available: https://martinfowler.com/articles/injection.html
+
+    \bibitem{johnson2004}
+    R.~Johnson \emph{et al.}, \emph{Pro Spring}. Apress, 2005.
+
+    \bibitem{microsoft2023}
+    Microsoft, ``Dependency injection in .NET,'' Microsoft Learn Documentation, 2023. [Online]. Available: https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection
+
+    \bibitem{szyperski2002}
+    C.~Szyperski, \emph{Component Software: Beyond Object-Oriented Programming}, 2nd~ed.\ Addison-Wesley, 2002.
+
+\end{thebibliography}
+
+
+\section*{Current executable software version}
+\label{}
+
+
+
+\end{document}
+\endinput
+%%
+%% End of file `SoftwareX_article_template.tex'.
