@@ -189,15 +189,27 @@ This is useful for components intended for usage in multiple environments. A goo
 
 This also reduces the build time of the resulting binary. As the modules are already compiled, available aout--of--the--box. The only step left is to link them with the runnable, or even simpler - upload to the device, if the module is shared library.
 
+\subsubsection{CI/CD compatibility}
+Because every \textit{component} can be build independently from the others (apart from the lightweight \textit{interface components}), any modern CI/CD pipeline can process it using standard tools. Toolchain for any target platform can be used within a dedicated container, used for the build process. Multiple containers provide the capability to compile for multiple platforms. The process can thus be paralellized in cloud environment.
 
+\subsection{Versioning}
+component versioning, compatibile with modern build tools e.g. Conan
+\subsection{Artifact management}
+storead as artifacts in dedicated repositories (e.g. Artifactory),
+\subsection{Binary composition}
+the application build from already existing building--blocks
+mention the diff-forge here?
 
+The exemplary tech stack may consist of:
+\begin{itemize}
+    \item Docker - for contenerization,
+    \item gcc - for build proces,
+    \item Conan - for build and artifact management,
+    \item Artifactory - for artifact storage,
+    \item GitHub and GitHub Actions - for orchestration.
+\end{itemize}
 
-\begin{enumerate}
-    \item compatibility with CI/CD - capable of processing multiple components at one, in paralell
-    \item component versioning, compatibile with modern build tools e.g. Conan
-    \item storead as artifacts in dedicated repositories (e.g. Artifactory),
-    \item the application build from already existing building--blocks
-\end{enumerate}
+It must be noted, that nowadays many embedded projects are still executed as they would 20 years ago. This resembles using a single SVN repository, with separate branches for multiple device variants and built manually using an IDE in Windows. This is one end of the scale and there are obviously executions in the whole spectra. The point is, however, that there are little industry standards, compared to e.g. webapp development.
 
 \subsection{Logical structure}
 Physical and logical structures can be
