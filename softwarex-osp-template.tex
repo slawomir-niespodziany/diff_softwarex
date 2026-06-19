@@ -99,6 +99,7 @@
     \begin{abstract}
         %% Text of abstract 
         Ca. 100 words
+        diff = depoendency injection framework First variant
 
     \end{abstract}
 
@@ -114,16 +115,6 @@
     \end{keyword}
 
 \end{frontmatter}
-
-%\linenumbers
-
-\section*{Required Metadata}
-\label{}
-
-\section*{Current code version}
-\label{}
-
-Ancillary data table required for subversion of the codebase. Kindly replace examples in right column with the correct information about your current code, and leave the left column as it is.
 
 \begin{table}[!h]
     \begin{tabular}{|l|p{6.5cm}|p{6.5cm}|}
@@ -151,102 +142,119 @@ Ancillary data table required for subversion of the codebase. Kindly replace exa
     \label{}
 \end{table}
 
-\textbf{Main text}\\
+% \textbf{Main text}\\
 
-Maximum 6 pages in total (excluding metadata, tables, figures, references) with a
-4000-word limit (we ask that more priority is placed on the word limit versus the page count). Though we strictly insist on the author following the template, in exceptional
-circumstances, we can be flexible with the page numbers and word limit. In such cases, it should be
-discussed with the managing editor or publisher prior to submission. All queries regarding the same can be reached at softwarex@elsevier.com.\\
+% Maximum 6 pages in total (excluding metadata, tables, figures, references) with a
+% 4000-word limit (we ask that more priority is placed on the word limit versus the page count). Though we strictly insist on the author following the template, in exceptional
+% circumstances, we can be flexible with the page numbers and word limit. In such cases, it should be
+% discussed with the managing editor or publisher prior to submission. All queries regarding the same can be reached at softwarex@elsevier.com.\\
 
-The description of your software  shall include:
+% The description of your software  shall include:
+
+
+
+
+
+\section{Motivation and significance}
+
+% \item Motivation and significance
+%       In this section, we want you to introduce the scientific background and the motivation for developing the software.
+
+%       \begin{itemize}
+%           \item Explain why the software is important and describe the exact (scientific) problem(s) it solves.
+%           \item Indicate in what way the software has contributed (or will contribute in the future) to the process of scientific discovery; if available, please cite a research paper using the software.
+%           \item Provide a description of the experimental setting. (How does the user use the software?)
+%           \item Introduce related work in literature (cite or list algorithms used, other software etc.).\\
+%       \end{itemize}
+
+Embedded systems are nowadays getting bigger and more complex as the technological advancements allow them to consist of more and more functionalities. Each system often comes in several variants, having customization options, subscription plans and update capabilities. Software is a vital part of an embedded system and grows accordingly to the system itself. While in the past it was sufficient to bootstrap and maintain a simple project for an embeddeded device, this is no longer the solution. It requires an up--front plan for configuration, turning functionalities on and off, adding new features not only at production, but also during the devices lifetime or simply fixing unavoidable bugs released unintentionally. The number of possible variants does not allow for cloning the project and deploying it with modifications each time. Such approach almost immediately breaks maintainability constraints. Another approach would be to keep all the possible variants within a single project, but this fall short in the context of complexity, build--time, IP--management, CI/CD compatibility. The bigger the system, the more problemmatic customization of its software becomes.
+
+Diff - \textit{Dependency Injection Framework} - \textit{First} variant - is a generic solution for embedded systems implemented using C++14 (and higher standards). It is a framework for implementing modular embedded applications with reusability and maintainability in mind from day one. It is compatibile with tools and methodologies widely used in embedded development. Its origin is nothing new. It was inspired by the mechanisms used in modern, scalable systems like the Spring framework. The basic principle is to use Json file with information controlling the structure and configuration of the resulting application. This data--driven approach mimicks large--scale systems whose functionality is often defined via metadata files e.g. IaC, CI/CD. The dependency injection pattern highly utilized at the code side allows the framework engine to handle lifetime and dependencies between application building--blocks, called \textit{components}. It allows for their loose coupling, which is a critical requirement for the codebase to be maintainable and scalable.
+
+\subsection{Modular architecture}
+Diff imposes certain design decisions on the architecture of the implemented software. Their point is to make software modular. However, this is only a low level (physical) constraint, allowing the user to decide on the logical structure. The application is composed of components of two kinds. Firstly, \textit{interface components} are lightweight and define contracts. Secondly, more heavyweight, regular components, which provide implementations are simply called \textit{components}. \textit{Interface components} are provided in the form of abstract classes. They consis of API definitions, which dictate how \textit{components} interact with each other.
+The \textit{components} provide implementations of those contracts. While they are similarily implemented in form of C++ classes, they consist of logic and are instantiable. \textit{Components} accept interface components as their contructor arguments, thus realizing the dependency injection pattern, allowing for inter--component interactions.
+The user provides implementations of both component types in form of header--only libraries (for \textit{interface components}) or statically--linked or shared libraries for \textit{components}. Their number, granularity and functionality depends on the particular project requirements. Components in their physical, library, form are referred to as \textit{modules}. The final application binary is linked with a subset of provided \textit{modules}.
+
+\subsection{Loose coupling}
+While the architecture at the lowest level is heavily imposed by the framework, the benefits resulting from following the proposal are as follows. While some of the listed arguments may seem very obvious in other software devlopment areas, they are not necessarily industry--standards in embedded software engineering.
+
+\subsubsection{Validation}
+Component tests are implemented and run in complete isolation from other components. Common unit test frameworks can be utilized for this purpose (e.g. GTest). Loose coupling allows for implementing most of the components using pure C++ - without the dependence on platform and hardware. This opens the possibility to run and validate implementations firstly - while development, on host machines (e.g. x86 architecture) and secondly, while deployment - within CI/CD pipelines, using containers.
+
+\subsubsection{Deployment}
+Each module is built at the time of its deployment, e.g. when it is submitted. The source code is immediately compiled and tested. Modules are built in form of libraries for all the platforms up--front (e.g. x86, ARM). From the same source code, a building block becomes available for any environment which may be necessary. This can be automated at the CI/CD level. The modules are stored in artifact repository (e.g. Artifactory).
+
+This is useful for components intended for usage in multiple environments. A good example may be a communication protocol layer, utilized in both host and device environments, which differ significantly (different architecture, compiler, resources). Havin ig in form of a library, which may be optimized for footprint on one architecture and for performance on the other allows for simply using an existing component in the following steps, rather that figureing how to rebuild (or worse - rewrite) an IP for another environment.
+
+This also reduces the build time of the resulting binary. As the modules are already compiled, available aout--of--the--box. The only step left is to link them with the runnable, or even simpler - upload to the device, if the module is shared library.
 
 
 
 
 \begin{enumerate}
-
-    \item Motivation and significance
-          In this section, we want you to introduce the scientific background and the motivation for developing the software.
-
-          \begin{itemize}
-              \item Explain why the software is important and describe the exact (scientific) problem(s) it solves.
-              \item Indicate in what way the software has contributed (or will contribute in the future) to the process of scientific discovery; if available, please cite a research paper using the software.
-              \item Provide a description of the experimental setting. (How does the user use the software?)
-              \item Introduce related work in literature (cite or list algorithms used, other software etc.).\\
-          \end{itemize}
-
-    \item Software description\\
-
-          Describe the software. Provide enough detail to help the reader understand its impact.
-
-          \begin{enumerate}
-              \item Software architecture: Give a short overview of the overall software architecture; provide a pictorial overview where possible; for example, an image showing the components. If necessary, provide implementation details.
-              \item Software functionalities: Present the major functionalities of the software.
-              \item Sample code snippets analysis (optional).\\
-          \end{enumerate}
-
-    \item Illustrative examples\\
-
-          Provide at least one illustrative example to demonstrate the major functions of your software/code.
-          OPTIONAL: You may submit an explanatory video or screencast. Only one MP4 formatted video (max. size 150MB) is possible per article and this should be uploaded as a single supplementary file with your submission. Recommended video dimensions are 640 x 480 at a maximum of 30 frames / second.\\
-
-    \item Impact\\
-
-          This is the main section of the article and reviewers will weight it appropriately.
-          Please indicate:
-
-          \begin{itemize}
-              \item Any new research questions that can be pursued as a result of your software.
-              \item In what way, and to what extent, your software improves the pursuit of existing research questions.
-              \item Any ways in which your software has changed the daily practice of its users.
-              \item How widespread the use of the software is within and outside the intended user group (downloads, number of users if your software is a service, citable publications, etc.).
-              \item How the software is being used in commercial settings and/or how it has led to the creation of spin-off companies.\\
-                    Please note that points 1 and 2 are best demonstrated by references to citable publications.\\
-          \end{itemize}
-
-
-    \item Conclusions\\
-
-          This is a mandatory section summarising your software based on the sections above.
-
-
+    \item compatibility with CI/CD - capable of processing multiple components at one, in paralell
+    \item component versioning, compatibile with modern build tools e.g. Conan
+    \item storead as artifacts in dedicated repositories (e.g. Artifactory),
+    \item the application build from already existing building--blocks
 \end{enumerate}
 
-\section{Motivation and significance}
-\label{sec:motivation}
+\subsection{Logical structure}
+Physical and logical structures can be
 
-Embedded systems are nowadays getting bigger and more complex as the technological advancements allow them to consist of more functionalities in smaller size. A single such system often comes in different variants, having customization options, subscription plans or update capabilities. This puts additional constraints on the software implemented for such. Software is a vital part of an embedded system and grows accordingly to the system itself. The bigger the size, the more problemmatic customization aspects become. Since the NRE cost is significant a simple per--variant implementation is not feasible business--wise. Having multiple implementations also yields the problem of maintainability, build time, CI/CD compatibility. The best solution in this case is to assemble the application from a set building blocks providing various functionalities. Some may serve common core functionalities, others may be use--case specific.
-These challenges form a significant engineering problem with a direct impact on business and on the way embedded software is developed nowadays. Rather than being tackled on a per--project basis, a generalised solution can be proposed at a higher level. In the case of this paper, the generalisation aims for embedded projects implemented witht the widely available C++14 - and higher standards, but not required. The paper discusses a fremawork intended for assembling embedded application from a set of loosely coupled modules, implemented separately. The imposed architecture ensures loose coupling while allowing to use a Json file for data--driven composition of the resulting application and flexible configuration. The design process assumed is compliant with the usage of modern tools for artifact management and continous deployment.
+\subsubsection{}
+Each \textit{component} is implemented while depending only on several thin \textit{interface components}. This means that its implementation know what it interacts with, but does not need to know how it is implemented. This yields
 
-The framework uses the pattern of Dependency Injection. It assumes multiple software components to be implemented, precompiled (to reduce build time) and available for composeing a binary. A selected set of those components is used to compose a runnable. Then during the launch time, a Json file is loaded to determine component instances to be created and their dependencies. The Json consists of a topology of components to be created and its configuration. As it is loaded at startup, it can be easily altered without the need for rebuild - this is particularly convenient for modifying the configuration.
+
+
+
+% A generic solution this paper provides for the problem is a predefined way to assemble the application from a set building blocks implementing various functionalities. Some serve common core functionalities, shared between the variants, others may may be more use--case specific. A larger set of those building blocks, called \textit{components}, allows to easily compose a customized binary for the specific use case. The way the components integrate with each other is also defined
+
+% These challenges form a significant engineering problem with a direct impact on business and on the way embedded software is developed nowadays. Rather than being tackled on a per--project basis, a generalised solution can be proposed at a higher level. In the case of this paper, the generalisation aims for embedded projects implemented witht the widely available C++14 - and higher standards, but not required. The paper discusses a fremawork intended for assembling embedded application from a set of loosely coupled modules, implemented separately. The imposed architecture ensures loose coupling while allowing to use a Json file for data--driven composition of the resulting application and flexible configuration. The design process assumed is compliant with the usage of modern tools for artifact management and continous deployment.
+
+% Framework utilizes the pattern of Dependency Injection. It assumes multiple software components to be implemented, precompiled into libraries (to reduce build time) and available for composing a runnable. A selected set of those components is used to link a binary out of them. Then during the launch time, a Json file is loaded to determine particular component instances and their dependencies. They are created accordingly. The Json consists of topology definition and configuration for each component instance. As it is loaded at startup, it can be easily altered without the need for rebuild, which is particularly convenient for tuning the configuration.
 
 \section{Software description}
-\label{sec:description}
 
-Diff (\textit{Dependency Injection Framework} - \textit{First} variant) consists of two elements. The first is the header--only library which comes along. The second is the philosopy imposed on the architecture of the resulting application.
+% \item Software description\\
+%       Describe the software. Provide enough detail to help the reader understand its impact.
+
+%       \begin{enumerate}
+%           \item Software architecture: Give a short overview of the overall software architecture; provide a pictorial overview where possible; for example, an image showing the components. If necessary, provide implementation details.
+%           \item Software functionalities: Present the major functionalities of the software.
+%           \item Sample code snippets analysis (optional).\\
+%       \end{enumerate}
+
+
+Diff stands for . It consists of two elements. Firstly, the header--only library of the same name, which comes along. Secondly, is the philosopy imposed on the architecture of the implemented application.
+
+\subsection{Components}
+The framework assumes two component types. Lightweight \textit{interface components}, which hold a definition of an abstract class, serving as an interface via which the inter--component dependencies are defined. Regular components, simply referred to as \textit{components} which provide implementations
 
 
 
-% The \emph{Dependency Injection} (DI) design pattern \cite{fowler2004} addresses this coupling at its root by inverting control of dependency creation: rather than a component instantiating its own collaborators, those collaborators are provided from the outside at composition time.
-% DI is well-established in enterprise software through frameworks such as Spring \cite{johnson2004} (Java) and the .NET built-in container \cite{microsoft2023}, but its adoption in embedded C++ has been limited.
-% Existing embedded frameworks prioritize deterministic real-time behavior or a small memory footprint, often at the expense of architectural discipline.
-% A standards-compliant, platform-independent DI framework specifically designed for embedded C++ has been absent from the ecosystem.
+% \item Illustrative examples\\
+%       Provide at least one illustrative example to demonstrate the major functions of your software/code.
+%       OPTIONAL: You may submit an explanatory video or screencast. Only one MP4 formatted video (max. size 150MB) is possible per article and this should be uploaded as a single supplementary file with your submission. Recommended video dimensions are 640 x 480 at a maximum of 30 frames / second.\\
 
-% \textit{Diff} fills this gap.
-% It is a header-only C++14 library that implements Dependency Injection on top of a lightweight component model, enabling modular, maintainable, and reusable embedded software \cite{szyperski2002}.
-% Because diff relies exclusively on the C++ standard library—without any OS-specific calls—it is portable across a wide range of targets: Linux (x86, RISC-V), QNX Neutrino (ARM), VxWorks (x86), Windows, and bare-metal ARM and RISC-V environments.
+% \item Impact\\
+%       This is the main section of the article and reviewers will weight it appropriately.
+%       Please indicate:
 
-% A user defines two kinds of building blocks.
-% \emph{Regular components} are C++ classes encapsulating distinct functionalities, compiled into static or dynamic libraries.
-% \emph{Interface components} are abstract C++ classes that declare contracts between components, shipped as header-only libraries.
-% An application is then described by a \textbf{topology}: a human-readable JSON file specifying which component types shall be instantiated, their configuration parameters, and how instances are wired together through interface dependencies.
-% At startup, the framework reads this file, constructs all component instances, and resolves their dependencies automatically, making them available via a type-safe \texttt{Build} object.
-% Because the topology is external to the binary, the application can be reconfigured—substituting hardware backends or restructuring component wiring—without recompilation.
-% The same JSON-driven description integrates naturally with CI/CD pipelines, where it selects which component modules are assembled into the target binary.
+%       \begin{itemize}
+%           \item Any new research questions that can be pursued as a result of your software.
+%           \item In what way, and to what extent, your software improves the pursuit of existing research questions.
+%           \item Any ways in which your software has changed the daily practice of its users.
+%           \item How widespread the use of the software is within and outside the intended user group (downloads, number of users if your software is a service, citable publications, etc.).
+%           \item How the software is being used in commercial settings and/or how it has led to the creation of spin-off companies.\\
+%                 Please note that points 1 and 2 are best demonstrated by references to citable publications.\\
+%       \end{itemize}
 
-% This architecture supports the embedded SDLC across several dimensions: independent development and unit-testing of each component, reuse of off-the-shelf component libraries across product variants, and runtime reconfigurability suited to both field deployment and laboratory testing.
-% The \textit{Broker} application included in this work illustrates these properties: a fleet-management edge-device firmware routing messages over interchangeable communication links (GSM, satellite, or Ethernet) is expressed as a set of diff components.
-% Switching between hardware configurations requires only editing the topology JSON file; the compiled component library remains unchanged.
+
+% \item Conclusions\\
+%       This is a mandatory section summarising your software based on the sections above.
+
+
 
 \section*{Acknowledgements}
 \label{}
