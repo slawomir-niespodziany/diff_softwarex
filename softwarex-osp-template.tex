@@ -192,32 +192,69 @@ This also reduces the build time of the resulting binary. As the modules are alr
 \subsubsection{CI/CD compatibility}
 Because every \textit{component} can be build independently from the others (apart from the lightweight \textit{interface components}), any modern CI/CD pipeline can process it using standard tools. Toolchain for any target platform can be used within a dedicated container, used for the build process. Multiple containers provide the capability to compile for multiple platforms. The process can thus be paralellized in cloud environment.
 
-\subsection{Versioning}
-component versioning, compatibile with modern build tools e.g. Conan
-\subsection{Artifact management}
-storead as artifacts in dedicated repositories (e.g. Artifactory),
-\subsection{Binary composition}
-the application build from already existing building--blocks
-mention the diff-forge here?
+\subsubsection{Versioning and multi--platform ability}
+The intrinsic compatibility with modern package management tools, such as Conan 2.0, allows for their usage for versioning and deploying modules for multiple platforms. Both \textit{interface components} and regular \textit{components} require versioning. While the first ones are deployed in form of header--only libraries, which makes them natively multi--pltform, the regular \textit{components} need to be build for all the intended pltforms separately. This can be easily automated with such tools and contenerization, where each container consists of a toolchain and configuration for a single platform and the source project is platform independent. Building the project within a selected container produces a binary for the corresponding platform.
 
-The exemplary tech stack may consist of:
+% where the compiler and other platform--specific tools are within a container, the container can be used for offline builds and ci/cd based builds as usually is the case for cicd environments
+
+\subsubsection{Artifact management}
+Having multiple component versions for multiple platforms requires some organized means for storing the corresponding artifacts. One of the available tools is the Artifactory repository. It manages the created artifacts and makes them available for further usage. It is of crucial importance, that the selected package management tool shall easily integrate with it, to allows for smooth dependency usage. For the Artifactory and Conan 2.0 this is true. It is particularily important that the artifact repository shall be a non--local resource. Firstly, for consistency - all the involved devlopers shall use the same repository. Secondly, and most importantly, the CI/CD pipeline shall perform component build and deployment. As this will most likely happen within some cloud environment, the artifact repo shall be accessible from there too.
+
+\subsubsection{Binary composition}
+The resulting binary shall be composed of multiple components. The build process must be able to pull and include the required ones. This is partially handled by the already mentioned tools. However, they only operate at the level of a module, while composing an executable for the given topology also requires the knowledge about the interactions between components - their dependencies, implemented interfaces configuration capabilities. This infor is provided by the integrator of the runnable, but for two reasons an additional tool is required. Firstly, the Json file provided shall be validated as early as possible, or the binary may have problems at startup or may not build at all. Secondly, for the integrators covenience the list of available and compatibile components and their versions shall be aggregated in one place. From there a convenient method to compose the desired topology shall also be provided. This is realized through a custom desktop application \textit{diff-forge}.
+
+\subsection{Proposed tech--stack including diff}
+Diff framework alone would not be very usefull if not for the rest fo teh modern tech--stack. Its choice is a decision which for every project may be driven by differnet factors, thus resuting in different setup. A generic set of tools is proposed here as a starting point for deriving a project--specific toolchainn. However, the proposal is generic enough to allow for simply using it if there are no other constraints, limiting the use of the listed tools:
 \begin{itemize}
-    \item Docker - for contenerization,
-    \item gcc - for build proces,
-    \item Conan - for build and artifact management,
-    \item Artifactory - for artifact storage,
-    \item GitHub and GitHub Actions - for orchestration.
+    \item diff - architecture and modularization,
+    \item gcc/clang - build process,
+    \item Conan - package management,
+    \item Artifactory - artifact storage,
+    \item Docker - contenerization,
+    \item GitHub - source storage,
+    \item GitHub Actions - CI/CD.
 \end{itemize}
 
-It must be noted, that nowadays many embedded projects are still executed as they would 20 years ago. This resembles using a single SVN repository, with separate branches for multiple device variants and built manually using an IDE in Windows. This is one end of the scale and there are obviously executions in the whole spectra. The point is, however, that there are little industry standards, compared to e.g. webapp development.
+It is worth emphasizing, that nowadays many embedded projects are still executed as they were 20 years ago. This resembles using a single SVN repository, with separate branches for multiple software variants, built manually using an IDE in Windows--based developers PC. This is one end of the scale and there are obviously cases in the whole spectra - from the disfunctional ones (as in this example) up to the well managed, adapting the newest trends and methodologies. The point is, however, that there are little industry standards, compared to e.g. webapp development, where typical problems are solved at higher levels, allowing the work to focus on application specific issues.
 
-\subsection{Logical structure}
-Physical and logical structures can be
+\subsection{Physical and logical structure}
+Diff imposes physical structure - not for the application, but rather the environment, where it is developed and deployed. Nevertheless, this has some transitive impact on the internal applications architecture. From this perspective the app is composed of multiple separate components - which is in fact the main point. From there the app can be further architected into component groups. This may resemble layered architecture, hexagonal, or any of the designers choice. One of the possibilities, especially for embedded systems, where certain level of variablity is required, is as follows - the design is split into three layers:
+\begin{itemize}
+    \item applicaion
+    \item system
+    \item platform
+\end{itemize}
+
+% emphasize this is only an example of app architecture, though well argumented.
+
+Further sections explain this using the example of permanent storage requirement.
+
+\subsubsection{Application layer}
+This is a layer where the application logic resides. It is mainly driven by the business requirements, not necessarily depending on the used MCU/SoC, or the overall ssytem architecture. It may obviously assume certain restrictions e.g. on the underlying hardware, but does not define it specifically.
+
+The app may require some way to store data permanently, it may define the size fo required sotrage, its non--functional parameters, like access time, durability, but does not define anything specific.
+
+\subsubsection{System layer}
+This layer fulfills the requirements imposed by the application layer, providing certain resources to it. The difference is however, that the top layer only soecifies the requirement for certain use--cases and this layer specifies how they are provided. This is crucial for system flexibility.
+
+This layer defines what is the target device providing the required functionality. It may be a flash--memory communicating over SPI bus if it fulfills the requiremetns falling down from the upper layer.
+
+\subsubsection{Platform layer}
+This specifies how the software integrates with the platform it is running within. This is crucial for software portability.
+
+This layer provides the integration method of the driven device with the underlying platform. E.g. it provides the SPI driver to allow for communicating with the selected SPI--flash.
+
+\subsubsection{Flexibility provided}
+Now, if the memory chip unavailable (out--of--stock, or not produced anymore), the design may incorporate another similar chip. Then the only place where the software requires an update is the System layer - the module responsible for handling the specific chip can be replaced. Then if two software variants are deployed they only differ in that specific component.
+
+If the replaced part is the platform the software runs on (e.g. the CPU/MCU), the only plce where the design requires changes is the Platform layer - in this case particularily the SPI driver.
+
 
 \subsubsection{}
 Each \textit{component} is implemented while depending only on several thin \textit{interface components}. This means that its implementation know what it interacts with, but does not need to know how it is implemented. This yields
 
-
+% TODO
+% SAY NO ESTABLISHED WORKFLOW/SETUP/ENVIRONMENT/METHODOLOGY and THUS this paper proposes one!
 
 
 % A generic solution this paper provides for the problem is a predefined way to assemble the application from a set building blocks implementing various functionalities. Some serve common core functionalities, shared between the variants, others may may be more use--case specific. A larger set of those building blocks, called \textit{components}, allows to easily compose a customized binary for the specific use case. The way the components integrate with each other is also defined
