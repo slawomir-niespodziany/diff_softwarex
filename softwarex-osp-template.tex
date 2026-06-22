@@ -249,13 +249,11 @@ Now, if the memory chip unavailable (out--of--stock, or not produced anymore), t
 
 If the replaced part is the platform the software runs on (e.g. the CPU/MCU), the only plce where the design requires changes is the Platform layer - in this case particularily the SPI driver.
 
-
-\subsubsection{}
-Each \textit{component} is implemented while depending only on several thin \textit{interface components}. This means that its implementation know what it interacts with, but does not need to know how it is implemented. This yields
+% \subsubsection{}
+% Each \textit{component} is implemented while depending only on several thin \textit{interface components}. This means that its implementation know what it interacts with, but does not need to know how it is implemented. This yields
 
 % TODO
 % SAY NO ESTABLISHED WORKFLOW/SETUP/ENVIRONMENT/METHODOLOGY and THUS this paper proposes one!
-
 
 % A generic solution this paper provides for the problem is a predefined way to assemble the application from a set building blocks implementing various functionalities. Some serve common core functionalities, shared between the variants, others may may be more use--case specific. A larger set of those building blocks, called \textit{components}, allows to easily compose a customized binary for the specific use case. The way the components integrate with each other is also defined
 
@@ -275,10 +273,86 @@ Each \textit{component} is implemented while depending only on several thin \tex
 %       \end{enumerate}
 
 
-Diff stands for . It consists of two elements. Firstly, the header--only library of the same name, which comes along. Secondly, is the philosopy imposed on the architecture of the implemented application.
+% Diff stands for . It consists of two elements. Firstly, the header--only library of the same name, which comes along. Secondly, is the philosopy imposed on the architecture of the implemented application.
 
-\subsection{Components}
-The framework assumes two component types. Lightweight \textit{interface components}, which hold a definition of an abstract class, serving as an interface via which the inter--component dependencies are defined. Regular components, simply referred to as \textit{components} which provide implementations
+Diff is a header--only library imported into users project, in particular it is utilized by every \textit{component}. It provides a set of template classes used for creating components, allowing them to be instantiated and managing the created topology. It allows to access the instantiated components from outside the created topology.
+
+\subsection{Component implementation}
+A \textit{component} is implemented in form of a C++ class. To make the framework aware of it, it derives from a CRTP template \textit{diff::Component<>} provided by the diff library. A component may both depend and be a dependency for other components.
+
+\subsubsection{Consuming a dependency}
+To utilize functionalities of other components, a common contract - \textit{interface component} - firstly needs to be defined in form of an abstract C++ class. It defines the required functionality, but does not specify the implementation. A \textit{component} consumes a dependency through its constructor (Figure~\ref{fig:component_implementation}). It accepts a reference to an abstract interface class and uses its functionality utilizing polymorphism provided by C++.
+
+\subsubsection{Exposing a dependency}
+To expose its functionality, the component derives from \textit{interface components} implemented as abstract classes. Usual inheritance, with no side--effects, is still available. To make the interface exposed, it shall be designated with $as<>$ trait and declared within the $diff::Component<>$ template. This creates the inheritance relation and notifies the framework about the exposed interface. The following example depicts the possibilities:
+
+\begin{figure}[ht]
+    \centering
+    {\scriptsize\begin{verbatim}
+class MyComponent : 
+    public diff:Component<MyComponent, 
+                          diff::as<ExposedInterface1>
+                          diff::as<ExposedInterface2>>, 
+    public OtherClass {
+public:
+    MyComponent(ConsumedInterface & firstDependency) {
+        ...
+    }
+};
+\end{verbatim}}
+    \caption{Component visible for the framework uses a CRTP template class $Component<>$. Interfaces through which the component is exposed as a dependency shall be abstract classes and are declared within that template with $as<>$ traits. Usual inheritance is also possible - the framework is not aware of it. In this example the component is exposed through $ExposedInterface1$ and $ExposedInterface2$ interfaces, while it simply inherits after the $OtherClass$ - without any side--effects. TODO CONSTRUCTOR}
+    \label{fig:component_implementation}
+\end{figure}
+
+An instance created by the framework always has a unique identifier of type std::string assigned by the user. When the component exposes interfaces they become available as dependencies for other components and are too identified by the same id. This is possible because an interface can only be inherited once by a C++ class. While this makes dependency identification simple, it has a serious disadvantage. A component may not expose multiple interfaces of the same type this way. For this reason diff provides a method for exposing multiple internal objects as dependencies. This is realized through a \textit{side} member function of the following signature. It is intended to return references to the internal objects and id suffixes for each. The resulting id for each such dependency is composed with the owning instance id and each suffix concatenated with an underscore character.
+
+\begin{figure}[ht]
+    \centering
+    {\scriptsize\begin{verbatim}
+using namespace diff;
+
+class MyComponent : 
+    public Component<MyComponent, ..., side<MyInterface>> {
+public:
+    ... 
+
+    void side(std::map<std::string, std::reference_wrapper<MyInterface>> &sideDependencies) {
+        ...
+    }
+};
+\end{verbatim}}
+    \caption{Component visible for the framework uses a CRTP template class $Component<>$. Interfaces through which the component is exposed as a dependency shall be abstract classes and are declared within that template with $as<>$ traits. Usual inheritance is also possible - the framework is not aware of it. In this example the component is exposed through $MyFirstInterface$ and $MySecondInterface$ interfaces, while it simply inherits after the $OtherClass$ - without any side--effects.}
+    \label{fig:aaa}
+\end{figure}
+
+Because of the lack of reflection mechanism in C++14, the framework is notified about side--dependencies through an additional template argument using $side<>$ trait.
+
+\subsubsection{Registering a component}
+
+
+\subsection{Wraping in a module}
+
+
+
+
+A \textit{component} may provide implementations for arbitrary number of \textit{interface components}. Thus it can be then injected as a dependency of one of the implemented interface types. It implements these interfaces either directly or exposes internal objects which implement them. The framework must obtain their references to be able to inject them as dependencies for other components. For this reason a \textit{component} derives from a CRTP template class \textit{Component<>}, which informs the framework about the interfaces it implements directly and indirectly. The tempalte also then defines a factory for the component. Traits \textit{as<>} and \textit{side<>} are used to designate interfaces implemented directly and indirectly. Indirectly implemented interfaces are referenced by the framework through a member function of the following signature:
+
+\begin{verbatim}
+void Component::side(std::map<std::string, std::reference_wrapper<Interface>> & sideDependencies);
+\end{verbatim}
+
+An exemplary component differs a bit, compared to a pure class implemented out of the context of diff. However the impact is not significant and can if required - a mock can be introduced to make the framework behavior a \textit{no--op}.
+
+\begin{verbatim}
+
+class MyComponent : diff:Component<MyComponent, as<>>
+    
+\end{verbatim}
+
+
+
+% \subsection{Components}
+% The framework assumes two component types. Lightweight \textit{interface components}, which hold a definition of an abstract class, serving as an interface via which the inter--component dependencies are defined. Regular components, simply referred to as \textit{components} which provide implementations
 
 
 
